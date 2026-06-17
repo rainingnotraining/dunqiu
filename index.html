@@ -261,9 +261,9 @@
             margin:0 auto;
             position: relative;
             z-index: 1;
-            width: min(46vw, 180px);
-            min-width: 132px;
-            max-width: 180px;
+            width: min(42vw, 164px);
+            min-width: 120px;
+            max-width: 164px;
             border: none;
             background: none;
             padding: 0;
@@ -291,7 +291,7 @@
             justify-content: center;
             color: #557696;
             font-weight: 700;
-            font-size: clamp(18px, 5vw, 22px);
+            font-size: clamp(17px, 4.6vw, 20px);
             text-shadow: none;
             pointer-events: none;
         }
@@ -330,9 +330,9 @@
             width: 78%;
             max-width: min(100%, 312px);
             height: auto;
-            min-height: clamp(60px, 16vw, 72px);
+            min-height: clamp(44px, 12vw, 52px);
             margin-top: 18px;
-            padding: clamp(8px, 2.5vw, 10px) clamp(12px, 4vw, 16px);
+            padding: clamp(3px, 1.2vw, 5px) clamp(12px, 4vw, 16px);
             background: rgba(255,255,255,.96);
             border: clamp(5px, 1.8vw, 8px) solid #bad5f6;
             border-radius: 999px;
@@ -730,10 +730,9 @@
             object-fit: contain;
         }
 
-        .music-toggle {
+        .floating-control {
             position: absolute;
             top: calc(12px + env(safe-area-inset-top));
-            right: clamp(12px, 4vw, 16px);
             z-index: 140;
             width: clamp(40px, 12vw, 42px);
             height: clamp(40px, 12vw, 42px);
@@ -748,14 +747,36 @@
             transition: transform 0.18s ease, filter 0.18s ease, opacity 0.18s ease;
         }
 
+        .music-toggle {
+            right: clamp(12px, 4vw, 16px);
+        }
+
+        .shop-back-btn {
+            left: clamp(12px, 4vw, 16px);
+            display: none;
+        }
+
         .music-toggle:hover,
+        .shop-back-btn:hover,
         .music-toggle:focus-visible,
+        .shop-back-btn:focus-visible,
         .music-toggle:active {
             transform: scale(1.05);
             filter: brightness(1.06);
         }
 
+        .shop-back-btn:active {
+            transform: scale(1.05);
+            filter: brightness(1.06);
+        }
+
         .music-toggle svg {
+            width: 22px;
+            height: 22px;
+            fill: #5b8fd4;
+        }
+
+        .shop-back-btn svg {
             width: 22px;
             height: 22px;
             fill: #5b8fd4;
@@ -843,8 +864,8 @@
             }
 
             .ui-image-btn {
-                width: min(44vw, 168px);
-                min-width: 124px;
+                width: min(40vw, 152px);
+                min-width: 112px;
             }
 
             .shop-set-card {
@@ -907,7 +928,12 @@
 
 <body>
 <main class="phone-frame">
-    <button class="music-toggle" id="music-toggle" type="button" aria-label="切换背景音乐" aria-pressed="true">
+    <button class="floating-control shop-back-btn" id="shop-back-btn" type="button" aria-label="返回上一页">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M14.97 5.97a1 1 0 0 1 0 1.414L10.353 12l4.617 4.616a1 1 0 0 1-1.414 1.415l-5.324-5.324a1 1 0 0 1 0-1.414l5.324-5.324a1 1 0 0 1 1.414 0Z"></path>
+        </svg>
+    </button>
+    <button class="floating-control music-toggle" id="music-toggle" type="button" aria-label="切换背景音乐" aria-pressed="true">
         <svg viewBox="0 0 24 24" aria-hidden="true">
             <path d="M10 4.5a1 1 0 0 1 1.447-.894l6 3A1 1 0 0 1 18 7.5v8.264a3.5 3.5 0 1 1-2-3.153V8.118l-4-2v10.146a3.5 3.5 0 1 1-2-3.153V4.5Z"></path>
         </svg>
@@ -916,7 +942,7 @@
     <!-- 01 邀请函 -->
     <div class="page invitation-page active" id="page-invitation">
         <div class="video-container">
-            <video id="bgVideo" autoplay muted playsinline>
+            <video id="bgVideo" autoplay muted loop playsinline webkit-playsinline="true" x5-playsinline="true" x5-video-player-type="h5-page" x5-video-player-fullscreen="false" preload="auto">
                 <source src="./1.mp4" type="video/mp4">
             </video>
         </div>
@@ -975,14 +1001,13 @@
             <div class="section-header-card">
                 <h2 class="section-title">今日列车旅客档案</h2>
                 <div class="section-divider"></div>
-                <p class="section-subtitle">2026-06-24</p>
+                <p class="section-subtitle">象乐乐</p>
             </div>
         </div>
 
         <div class="archive-card">
             <div class="archive-meta">
                 <div class="archive-id">档案001</div>
-                <div class="archive-name">象乐乐</div>
                 <div class="archive-info">
                     年龄：7岁&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;身份：入站旅客<br>
                 </div>
@@ -1238,7 +1263,9 @@ or
     const staffDesc = document.getElementById('staff-desc');
     const navBar = document.getElementById('nav-bar');
     const navItems = document.querySelectorAll('.nav-item');
+    const shopBackBtn = document.getElementById('shop-back-btn');
     const musicToggle = document.getElementById('music-toggle');
+    const bgVideo = document.getElementById('bgVideo');
     const bgmAudio = document.getElementById('bgm-audio');
     const buttonSound = document.getElementById('button-sound');
     const shopHomeView = document.getElementById('shop-home-view');
@@ -1268,6 +1295,7 @@ or
     let bgmUserPaused = false;
     let bgmResumeAfterExternalJump = false;
     let bgmFadeTimer = null;
+    let currentPageId = 'invitation';
     const pageMap = Array.from(pages).reduce((map, page) => {
         map[page.id.replace('page-', '')] = page;
         return map;
@@ -1289,17 +1317,65 @@ or
         });
     }
 
+    function isShopOverlayView(view) {
+        return view === shopPostcardView ||
+            view === shopPreviewView ||
+            view === shopBadgeView ||
+            view === shopBadgePreviewView;
+    }
+
+    function updateShopOverlayUI(activeShopView) {
+        const overlayActive = currentPageId === 'shop' && isShopOverlayView(activeShopView);
+
+        if (navBar) {
+            navBar.style.display = currentPageId === 'invitation' || overlayActive ? 'none' : 'flex';
+        }
+
+        if (shopBackBtn) {
+            shopBackBtn.style.display = overlayActive ? 'flex' : 'none';
+        }
+    }
+
+    function handleShopPreviewBack() {
+        if (shopPostcardView && shopPostcardView.classList.contains('active')) {
+            setActiveShopView(shopHomeView);
+            return;
+        }
+
+        if (shopPreviewView && shopPreviewView.classList.contains('active')) {
+            setActiveShopView(shopPostcardView);
+            return;
+        }
+
+        if (shopBadgeView && shopBadgeView.classList.contains('active')) {
+            setActiveShopView(shopHomeView);
+            return;
+        }
+
+        if (shopBadgePreviewView && shopBadgePreviewView.classList.contains('active')) {
+            setActiveShopView(shopBadgeView);
+        }
+    }
+
     function goToPage(pageId) {
         const targetPage = pageMap[pageId];
         if (!targetPage) return;
 
+        currentPageId = pageId;
         setPageActive(targetPage.id);
-        navBar.style.display = pageId === 'invitation' ? 'none' : 'flex';
         setNavActive(pageId);
 
         if (pageId !== 'shop') {
             resetShopViews();
         }
+
+        if (pageId !== 'shop') {
+            updateShopOverlayUI(null);
+            return;
+        }
+
+        const activeShopView = shopViews.find(view => view.classList.contains('active')) || shopHomeView;
+        updateShopOverlayUI(activeShopView);
     }
 
     function playPV() {
@@ -1401,6 +1477,7 @@ or
     function setActiveShopView(view) {
         shopViews.forEach(item => item.classList.remove('active'));
         if (view) view.classList.add('active');
+        updateShopOverlayUI(view);
     }
 
     function wrapIndex(current, step, total) {
@@ -1512,6 +1589,43 @@ or
         }
     }
 
+    function tryPlayInvitationVideo() {
+        if (!bgVideo) return;
+        bgVideo.muted = true;
+        bgVideo.setAttribute('muted', '');
+        bgVideo.setAttribute('autoplay', '');
+        bgVideo.setAttribute('playsinline', '');
+        bgVideo.setAttribute('webkit-playsinline', 'true');
+        bgVideo.setAttribute('x5-playsinline', 'true');
+        bgVideo.setAttribute('x5-video-player-type', 'h5-page');
+        bgVideo.setAttribute('x5-video-player-fullscreen', 'false');
+
+        const playPromise = bgVideo.play();
+        if (playPromise && typeof playPromise.catch === 'function') {
+            playPromise.catch(() => {});
+        }
+    }
+
+    function initInvitationVideo() {
+        if (!bgVideo) return;
+
+        tryPlayInvitationVideo();
+        bgVideo.addEventListener('loadedmetadata', tryPlayInvitationVideo);
+        bgVideo.addEventListener('canplay', tryPlayInvitationVideo);
+
+        document.addEventListener('WeixinJSBridgeReady', tryPlayInvitationVideo, false);
+        document.addEventListener('YixinJSBridgeReady', tryPlayInvitationVideo, false);
+
+        const replayOnFirstGesture = function() {
+            tryPlayInvitationVideo();
+            document.removeEventListener('touchstart', replayOnFirstGesture, true);
+            document.removeEventListener('click', replayOnFirstGesture, true);
+        };
+
+        document.addEventListener('touchstart', replayOnFirstGesture, true);
+        document.addEventListener('click', replayOnFirstGesture, true);
+    }
+
     function bindSwipe(container, onSwipe) {
         if (!container) return;
 
@@ -1531,6 +1645,10 @@ or
     function bindGlobalInteractionAudio() {
         if (musicToggle) {
             musicToggle.addEventListener('click', toggleMusic);
+        }
+
+        if (shopBackBtn) {
+            shopBackBtn.addEventListener('click', handleShopPreviewBack);
         }
 
         document.addEventListener('visibilitychange', function() {
@@ -1560,14 +1678,6 @@ or
         bindSwipe(badgePreviewCard, changeBadgePreview);
     }
 
-    const bgVideo = document.getElementById('bgVideo');
-    if (bgVideo) {
-        bgVideo.addEventListener('ended', () => {
-            bgVideo.pause();
-            bgVideo.currentTime = bgVideo.duration - 0.05;
-        });
-    }
-
     function positionDialItems() {
         const dialRadius = getDialRadius();
         dialItems.forEach((item, index) => {
@@ -1579,6 +1689,7 @@ or
     }
 
     function initDial() {
+        initInvitationVideo();
         updateMusicToggleState();
         positionDialItems();
         updateStaffText();
