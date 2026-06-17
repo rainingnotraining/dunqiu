@@ -622,6 +622,8 @@
 
         .postcard-preview-main,
         .postcard-preview-back {
+            position: relative;
+            z-index: 1;
             width: 100%;
             aspect-ratio: 1.38 / 1;
             overflow: hidden;
@@ -641,7 +643,8 @@
         }
 
         .postcard-preview-back {
-            opacity: .38;
+            z-index: 2;
+            opacity: 1;
         }
 
         .badge-preview-main {
@@ -871,10 +874,6 @@
 
             .postcard-preview-main {
                 margin-bottom: 8px;
-            }
-
-            .postcard-preview-back {
-                opacity: .2;
             }
 
             .shop-link-btn {
