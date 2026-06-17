@@ -942,7 +942,7 @@
     <!-- 01 邀请函 -->
     <div class="page invitation-page active" id="page-invitation">
         <div class="video-container">
-            <video id="bgVideo" autoplay muted loop playsinline webkit-playsinline="true" x5-playsinline="true" x5-video-player-type="h5-page" x5-video-player-fullscreen="false" preload="auto">
+            <video id="bgVideo" autoplay muted playsinline webkit-playsinline="true" x5-playsinline="true" x5-video-player-type="h5-page" x5-video-player-fullscreen="false" preload="auto">
                 <source src="./1.mp4" type="video/mp4">
             </video>
         </div>
@@ -1612,6 +1612,10 @@ or
         tryPlayInvitationVideo();
         bgVideo.addEventListener('loadedmetadata', tryPlayInvitationVideo);
         bgVideo.addEventListener('canplay', tryPlayInvitationVideo);
+        bgVideo.addEventListener('ended', function() {
+            bgVideo.pause();
+            bgVideo.currentTime = Math.max(bgVideo.duration - 0.05, 0);
+        });
 
         document.addEventListener('WeixinJSBridgeReady', tryPlayInvitationVideo, false);
         document.addEventListener('YixinJSBridgeReady', tryPlayInvitationVideo, false);
