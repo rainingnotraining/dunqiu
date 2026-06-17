@@ -1,0 +1,1454 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>顿丘车站</title>
+
+    <style>
+        @font-face {
+            font-family: "DunQiuFont";
+            src: url("./fonts/font.woff2?v=20260616") format("woff2"),
+                 url("./fonts/font.TTF?v=20260616") format("truetype");
+            font-weight: normal;
+            font-style: normal;
+            font-display: swap;
+        }
+
+        *,
+        html,
+        body,
+        button,
+        input,
+        textarea,
+        select {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "DunQiuFont", "Microsoft YaHei", sans-serif !important;
+        }
+
+        html, body {
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+        }
+
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .phone-frame {
+            width: min(100vw, 393px);
+            aspect-ratio: 393 / 852;
+            position: relative;
+            overflow: hidden;
+            border-radius: 28px;
+        }
+
+        .page {
+            display: none;
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .page.active {
+            display: block;
+        }
+
+        .page.active.invitation-page {
+            display: flex;
+        }
+
+        .page-padding {
+            padding-bottom: 100px;
+        }
+
+        /* 首页 */
+        .invitation-page {
+            background: #000;
+            flex-direction: column;
+            justify-content: flex-end;
+            align-items: center;
+        }
+
+        .video-container {
+            position: absolute;
+            inset: 0;
+            overflow: hidden;
+        }
+
+        .video-container video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .invitation-content {
+            position: relative;
+            z-index: 10;
+            padding: 40px 30px;
+            text-align: center;
+        }
+
+        /* 内容页通用 */
+        .tour-page,
+        .archive-page,
+        .staff-page,
+        .shop-page {
+            color: #3A7FC5;
+            padding: 30px 20px;
+            background: url("./2.jpg") center/cover no-repeat;
+        }
+
+        /* 车站导览 */
+        .tour-header {
+            margin-bottom: 18px;
+        }
+
+        .announcement {
+            background: url("./66.jpg") center/cover no-repeat;
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 20px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .announcement-text {
+            line-height: 1.5;
+            font-size: 16px;
+        }
+
+        /* 旅客档案 */
+        .section-header {
+            position: relative;
+            margin: 6px auto 18px;
+            padding-top: 16px;
+        }
+
+        .section-header::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 50%;
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            background: #71baf0;
+            transform: translateX(-50%);
+            z-index: 2;
+        }
+
+        .section-header-card {
+            background: rgba(255,255,255,.94);
+            border: 3px solid #8ec9f6;
+            border-radius: 34px;
+            padding: 24px 20px 18px;
+            text-align: center;
+            box-shadow: 0 8px 18px rgba(126, 181, 231, .15);
+        }
+
+        .section-title {
+            color: #5b8fd4;
+            font-size: 27px;
+            line-height: 1.25;
+            letter-spacing: 2px;
+        }
+
+        .section-divider {
+            width: 88%;
+            height: 4px;
+            margin: 14px auto 12px;
+            background: #8ec9f6;
+            border-radius: 999px;
+        }
+
+        .section-subtitle {
+            color: #5b8fd4;
+            font-size: 16px;
+            line-height: 1.4;
+        }
+
+        .archive-card {
+            position: relative;
+            background: rgba(255,255,255,.78);
+            border: 3px solid rgba(186, 213, 246, .95);
+            border-radius: 28px;
+            padding: 20px 18px 28px;
+            box-shadow: 0 10px 24px rgba(90, 150, 210, .18);
+            overflow: hidden;
+        }
+
+        .archive-card::before {
+            content: "";
+            position: absolute;
+            inset: 14px;
+            border: 2px dashed rgba(119, 164, 233, .4);
+            border-radius: 22px;
+            pointer-events: none;
+        }
+
+        .archive-meta {
+            position: relative;
+            z-index: 1;
+            text-align: center;
+            color: #4f84c7;
+            margin-bottom: 14px;
+        }
+
+        .archive-id {
+            display: inline-block;
+            min-width: 110px;
+            padding: 6px 16px;
+            margin-bottom: 10px;
+            background: #fff;
+            border: 2px solid #bad5f6;
+            border-radius: 999px;
+            color: #f6a623;
+            font-size: 15px;
+        }
+
+        .archive-name {
+            font-size: 28px;
+            color: #3a7fc5;
+            margin-bottom: 12px;
+        }
+
+        .archive-info {
+            line-height: 1.9;
+            font-size: 15px;
+            color: #5b82ac;
+        }
+
+        .archive-hero {
+            position: relative;
+            z-index: 1;
+            margin: 1px 0 2px;
+            padding: 1px;
+            border-radius: 24px;
+        }
+
+        .archive-hero img {
+            display: block;
+            width: 100%;
+            border-radius: 11px;
+        }
+
+        .ui-image-btn {
+            display:block;
+            margin:0 auto;
+            position: relative;
+            z-index: 1;
+            width: 40%;
+            border: none;
+            background: none;
+            padding: 0;
+            cursor: pointer;
+            transition: transform 0.18s ease, filter 0.18s ease, opacity 0.18s ease;
+        }
+
+        .ui-image-btn img {
+            display: block;
+            width: 100%;
+        }
+
+        .ui-image-btn:hover,
+        .ui-image-btn:focus-visible,
+        .ui-image-btn:active {
+            transform: scale(1.03);
+            filter: brightness(1.08);
+        }
+
+        .ui-image-btn-text {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #557696;
+            font-weight: 700;
+            font-size: 22px;
+            text-shadow: none;
+            pointer-events: none;
+        }
+        /* 工作人员页面 */
+        .staff-section {
+            width: 100%;
+            margin-bottom: 30px;
+        }
+
+        .staff-section .section-header {
+            width: 100%;
+            margin-bottom: 0;
+        }
+
+        .staff-section .section-title {
+            font-size: 30px;
+        }
+
+        .staff-section .section-subtitle {
+            padding: 0 10px;
+            font-size: 14px;
+            line-height: 1.7;
+        }
+
+        .dial-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-top: 20px;
+        }
+
+        .dial-controls {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            width: 78%;
+            max-width: 312px;
+            height: auto;
+            min-height: 72px;
+            margin-top: 18px;
+            padding: 10px 16px;
+            background: rgba(255,255,255,.96);
+            border: 8px solid #bad5f6;
+            border-radius: 999px;
+            box-shadow: 0 8px 16px rgba(103, 170, 233, .18);
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .dial-btn {
+            position: relative;
+            width: 52px;
+            height: 52px;
+            border: none;
+            background: transparent;
+            cursor: pointer;
+            flex: 0 0 auto;
+            transition: transform 0.18s ease, filter 0.18s ease, opacity 0.18s ease;
+        }
+
+        .dial-btn::before {
+            content: "";
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            transform: translate(-50%, -50%);
+            border-top: 14px solid transparent;
+            border-bottom: 14px solid transparent;
+        }
+
+        .dial-btn-left::before {
+            border-right: 24px solid #59b8f7;
+            margin-left: -2px;
+        }
+
+        .dial-btn-right::before {
+            border-left: 24px solid #59b8f7;
+            margin-left: 2px;
+        }
+
+        .dial-btn:hover,
+        .dial-btn:focus-visible,
+        .dial-btn:active {
+            transform: scale(1.05);
+            filter: brightness(1.12);
+        }
+
+        .dial-wrapper {
+            width: 400px;
+            height: 400px;
+            position: relative;
+        }
+
+        .dial-bg {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            position: absolute;
+            top: 0;
+            left: 0;
+            z-index: 0;
+        }
+
+        .dial {
+            width: 400px;
+            height: 400px;
+            border-radius: 50%;
+            position: relative;
+            transition: transform 0.5s ease-out;
+            z-index: 1;
+        }
+
+        .dial-item {
+            position: absolute;
+            width: 100px;
+            height: 100px;
+            background: #fff;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 32px;
+            border: 3px solid #BAD5F6;
+            left: 50%;
+            top: 50%;
+            overflow: hidden;
+            transition: transform 0.5s ease-out;
+        }
+
+        .dial-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 50%;
+        }
+
+        /* 周边页 */
+        .shop-header {
+            margin-bottom: 18px;
+        }
+
+        .shop-view {
+            display: none;
+        }
+
+        .shop-view.active {
+            display: block;
+        }
+
+        .shop-panel {
+            margin-bottom: 18px;
+            padding: 16px 14px;
+            background: rgba(255,255,255,.5);
+            border-radius: 28px;
+        }
+
+        .shop-panel-title {
+            margin-bottom: 12px;
+            color: #5b8fd4;
+            font-size: 16px;
+        }
+
+        .shop-panel-clickable {
+            cursor: pointer;
+            transition: transform 0.18s ease, filter 0.18s ease, opacity 0.18s ease;
+        }
+
+        .shop-panel-clickable:hover,
+        .shop-panel-clickable:active {
+            transform: scale(1.02);
+            filter: brightness(1.06);
+        }
+
+        .shop-teaser-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 14px;
+        }
+
+        .shop-teaser-grid-badge {
+            grid-template-columns: repeat(3, 1fr);
+        }
+
+        .shop-teaser-card {
+            aspect-ratio: 1.22 / 1;
+            border-radius: 6px;
+            overflow: hidden;
+            background: rgba(255,255,255,.45);
+        }
+
+        .shop-teaser-card-badge {
+            aspect-ratio: 1 / 1;
+            background: transparent;
+        }
+
+        .shop-teaser-card img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+
+        .shop-teaser-card-badge img {
+            object-fit: contain;
+        }
+
+        .shop-faded {
+            opacity: .28;
+        }
+
+        .postcard-grid {
+            padding: 6px 10px 0;
+        }
+
+        .postcard-grid-inner {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+        }
+
+        .badge-grid-inner {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 18px 16px;
+        }
+
+        .postcard-thumb {
+            border: none;
+            background: transparent;
+            padding: 0;
+            cursor: pointer;
+            transition: transform 0.18s ease, filter 0.18s ease, opacity 0.18s ease;
+        }
+
+        .postcard-thumb:hover,
+        .postcard-thumb:focus-visible,
+        .postcard-thumb:active {
+            transform: scale(1.03);
+            filter: brightness(1.08);
+        }
+
+        .badge-thumb {
+            border: none;
+            background: transparent;
+            padding: 0;
+            cursor: pointer;
+            transition: transform 0.18s ease, filter 0.18s ease, opacity 0.18s ease;
+        }
+
+        .badge-thumb:hover,
+        .badge-thumb:focus-visible,
+        .badge-thumb:active {
+            transform: scale(1.04);
+            filter: brightness(1.08);
+        }
+
+        .postcard-thumb img {
+            display: block;
+            width: 100%;
+            aspect-ratio: 1.38 / 1;
+            object-fit: contain;
+        }
+
+        .badge-thumb img {
+            display: block;
+            width: 100%;
+            aspect-ratio: 1 / 1;
+            object-fit: contain;
+        }
+
+        .shop-link-btn {
+            margin-top: 1px;
+        }
+
+        .shop-set-card {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 18px;
+            min-height: 170px;
+            padding: 12px 10px;
+            background: rgba(255,255,255,.42);
+            border-radius: 28px;
+        }
+
+        .shop-set-image {
+            flex: 0 0 48%;
+        }
+
+        .shop-set-image img {
+            display: block;
+            width: 100%;
+            border-radius: 8px;
+        }
+        .shop-set-text {
+            flex: 1;
+            text-align: center;
+            color: #5b82ac;
+            font-size: 18px;
+            line-height: 1.55;
+            white-space: pre-line;
+        }
+
+        .postcard-preview {
+            padding: 6px 10px 0;
+        }
+
+        .badge-preview {
+            padding: 10px 14px 0;
+        }
+
+        .postcard-preview-card {
+            position: relative;
+            padding: 14px;
+            background: rgba(255,255,255,.5);
+            border-radius: 28px;
+        }
+
+        .badge-preview-card {
+            position: relative;
+            padding: 26px 20px;
+            background: rgba(255,255,255,.5);
+            border-radius: 38px;
+        }
+
+        .postcard-preview-main,
+        .postcard-preview-back {
+            width: 100%;
+            aspect-ratio: 1.38 / 1;
+            overflow: hidden;
+            background: rgba(255,255,255,.28);
+        }
+
+        .postcard-preview-main img,
+        .postcard-preview-back img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            display: block;
+        }
+
+        .postcard-preview-main {
+            margin-bottom: 14px;
+        }
+
+        .postcard-preview-back {
+            opacity: .38;
+        }
+
+        .badge-preview-main {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 470px;
+        }
+
+        .badge-preview-main img {
+            display: block;
+            width: min(100%, 290px);
+            aspect-ratio: 1 / 1;
+            object-fit: contain;
+        }
+
+        .badge-swipe-layer,
+        .postcard-swipe-layer {
+            position: absolute;
+            inset: 0;
+            display: flex;
+        }
+
+        .postcard-swipe-zone {
+            flex: 1;
+            background: transparent;
+            border: none;
+            cursor: pointer;
+        }
+
+        /* 底部导航 */
+        .nav-bar {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            z-index: 100;
+            width: 100%;
+            background: rgba(255,255,255,0.5);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            padding: 10px 0;
+            border-radius: 150px 150px 0 0;
+            gap: 20px;
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            color: #3A7FC5;
+            font-size: 12px;
+            cursor: pointer;
+            transition: transform 0.18s ease, filter 0.18s ease, opacity 0.18s ease;
+        }
+
+        .nav-item:hover,
+        .nav-item:active {
+            transform: scale(1.04);
+            filter: brightness(1.08);
+        }
+
+        .nav-item.active .nav-icon-wrapper {
+            background: #67c7ff;
+            transform: translateY(-2px);
+        }
+
+        .nav-icon-wrapper {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: #44C0FE;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: transform 0.2s ease, background 0.2s ease;
+        }
+
+        .nav-icon {
+            display: block;
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        .music-toggle {
+            position: absolute;
+            top: 16px;
+            right: 16px;
+            z-index: 140;
+            width: 42px;
+            height: 42px;
+            border: none;
+            border-radius: 50%;
+            background: rgba(255,255,255,.88);
+            box-shadow: 0 6px 14px rgba(91, 143, 212, .18);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: transform 0.18s ease, filter 0.18s ease, opacity 0.18s ease;
+        }
+
+        .music-toggle:hover,
+        .music-toggle:focus-visible,
+        .music-toggle:active {
+            transform: scale(1.05);
+            filter: brightness(1.06);
+        }
+
+        .music-toggle svg {
+            width: 22px;
+            height: 22px;
+            fill: #5b8fd4;
+        }
+
+        .music-toggle.is-muted::after {
+            content: "";
+            position: absolute;
+            width: 22px;
+            height: 3px;
+            border-radius: 999px;
+            background: #f08aa1;
+            transform: rotate(-45deg);
+        }
+    </style>
+</head>
+
+<body>
+<main class="phone-frame">
+    <button class="music-toggle" id="music-toggle" type="button" aria-label="切换背景音乐" aria-pressed="true">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M10 4.5a1 1 0 0 1 1.447-.894l6 3A1 1 0 0 1 18 7.5v8.264a3.5 3.5 0 1 1-2-3.153V8.118l-4-2v10.146a3.5 3.5 0 1 1-2-3.153V4.5Z"></path>
+        </svg>
+    </button>
+
+    <!-- 01 邀请函 -->
+    <div class="page invitation-page active" id="page-invitation">
+        <div class="video-container">
+            <video id="bgVideo" autoplay muted playsinline>
+                <source src="./1.mp4" type="video/mp4">
+            </video>
+        </div>
+
+        <div class="invitation-content">
+            <button class="ui-image-btn" onclick="goToPage('tour')">
+                <img src="./UI.png" alt="接受邀请按钮">
+                <span class="ui-image-btn-text">接受邀请</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- 02 车站导览 -->
+    <div class="page tour-page page-padding" id="page-tour">
+        <div class="tour-header">
+            <div class="section-header">
+                <div class="section-header-card">
+                    <h2 class="section-title">车站导览</h2>
+                    <div class="section-divider"></div>
+                    <p class="section-subtitle">站内公告</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="announcement">
+            <div class="announcement-text">
+                如果有一天，<br>
+                你想离开这个世界。<br><br>
+
+                那么在终点到来之前，<br>
+                请先抵达顿丘车站，<br><br>
+                
+                这里停靠在一趟永不返程的车站。<br>
+                每位旅人都需要留下一个故事，<br>
+                换取一件属于自己的信物。<br><br>
+
+                有人带着遗憾而来，<br>
+                有人带着思念驻足，<br>
+                也有人为了爱，甘愿忘记一切。<br><br>
+
+                你将成为这座车站的见证者，<br>
+                倾听他们的故事，<br>
+                寻找被藏起的真相，<br><br>
+
+                并恪守——<br>
+                在汽笛拉响前，核验每份故事的真意，<br>
+                为旅人理好行装...
+
+            </div>
+        </div>
+    </div>
+
+<!-- 03 旅客档案 -->
+    <div class="page archive-page page-padding" id="page-archive">
+        <div class="section-header">
+            <div class="section-header-card">
+                <h2 class="section-title">今日列车旅客档案</h2>
+                <div class="section-divider"></div>
+                <p class="section-subtitle">2026-06-24</p>
+            </div>
+        </div>
+
+        <div class="archive-card">
+            <div class="archive-meta">
+                <div class="archive-id">档案001</div>
+                <div class="archive-name">象乐乐</div>
+                <div class="archive-info">
+                    年龄：7岁&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;身份：入站旅客<br>
+                </div>
+            </div>
+
+            <div class="archive-hero">
+                <img src="./a.PNG" alt="档案主图">
+            </div>
+
+            <button class="ui-image-btn" onclick="playPV()">
+                <img src="./UI.png" alt="查看细节按钮">
+                <span class="ui-image-btn-text">查看细节</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- 04 工作人员 -->
+    <div class="page staff-page page-padding" id="page-staff">
+        <div class="staff-section">
+            <div class="section-header">
+                <div class="section-header-card">
+                    <h2 class="section-title" id="staff-title">欢迎来到</h2>
+                    <div class="section-divider"></div>
+                    <p class="section-subtitle" id="staff-desc">欢迎来到顿丘车站，这是一个充满回忆的地方</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="dial-container">
+            <div class="dial-wrapper">
+                <img src="./dial.PNG" alt="dial" class="dial-bg">
+                <div class="dial" id="dial">
+                    <div class="dial-item"><img src="./1.PNG" alt="1"></div>
+                    <div class="dial-item"><img src="./2.PNG" alt="2"></div>
+                    <div class="dial-item"><img src="./3.PNG" alt="3"></div>
+                    <div class="dial-item"><img src="./4.PNG" alt="4"></div>
+                    <div class="dial-item"><img src="./5.PNG" alt="5"></div>
+                    <div class="dial-item"><img src="./6.PNG" alt="6"></div>
+                    <div class="dial-item"><img src="./7.PNG" alt="7"></div>
+                </div>
+            </div>
+            <div class="dial-controls">
+                <button class="dial-btn dial-btn-left" onclick="rotateDial(-1)" aria-label="向左切换"></button>
+                <button class="dial-btn dial-btn-right" onclick="rotateDial(1)" aria-label="向右切换"></button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 05 周边 -->
+    <div class="page shop-page page-padding" id="page-shop">
+        <div class="shop-view active" id="shop-home-view">
+            <div class="shop-header">
+                <div class="section-header">
+                    <div class="section-header-card">
+                        <h2 class="section-title">顿丘纪念馆</h2>
+                        <div class="section-divider"></div>
+                        <p class="section-subtitle">关于顿丘的小小纪念，<br>体验游戏后即可免费任选一张带走～</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="shop-panel shop-panel-clickable" onclick="showPostcardList()">
+                <div class="shop-panel-title">明信片：</div>
+                <div class="shop-teaser-grid">
+                    <div class="shop-teaser-card">
+                        <img src="./image1/1.png" alt="明信片预览1">
+                    </div>
+                    <div class="shop-teaser-card shop-faded">
+                        <img src="./image1/2.png" alt="明信片预览2">
+                    </div>
+                </div>
+            </div>
+
+            <div class="shop-panel shop-panel-clickable" onclick="showBadgeList()">
+                <div class="shop-panel-title">吧唧/镜子柄：</div>
+                <div class="shop-teaser-grid shop-teaser-grid-badge">
+                    <div class="shop-teaser-card shop-teaser-card-badge">
+                        <img src="./image2/1.png" alt="吧唧预览1">
+                    </div>
+                    <div class="shop-teaser-card shop-teaser-card-badge">
+                        <img src="./image2/2.png" alt="吧唧预览2">
+                    </div>
+                    <div class="shop-teaser-card shop-teaser-card-badge">
+                        <img src="./image2/3.png" alt="吧唧预览3">
+                    </div>
+                </div>
+            </div>
+
+            <div class="shop-panel">
+                <div class="shop-panel-title">SET：</div>
+                <div class="shop-set-card">
+                    <div class="shop-set-image">
+                        <img src="./c.jpg" alt="SET 展示图">
+                    </div>
+                    <div class="shop-set-text">任选3张明信片
+or
+任选2张明信片
++吧唧+镜子</div>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="shop-view" id="shop-postcard-view">
+            <div class="shop-header">
+                <div class="section-header">
+                    <div class="section-header-card">
+                        <h2 class="section-title">顿丘纪念馆</h2>
+                        <div class="section-divider"></div>
+                        <p class="section-subtitle">顿丘的小小纪念，</p>
+                          <p class="section-subtitle">体验游戏后即可免费任选带走一个～</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="shop-panel postcard-grid">
+                <div class="postcard-grid-inner" id="postcard-grid"></div>
+            </div>
+        </div>
+
+        <div class="shop-view" id="shop-preview-view">
+            <div class="shop-header">
+                <div class="section-header">
+                    <div class="section-header-card">
+                        <h2 class="section-title">顿丘纪念馆</h2>
+                        <div class="section-divider"></div>
+                        <p class="section-subtitle">关于顿丘的小小纪念，<br>体验游戏后即可免费任选一张带走～</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="postcard-preview">
+                <div class="postcard-preview-card" id="postcard-preview-card">
+                    <div class="postcard-preview-main">
+                        <img id="preview-front" src="./image1/1.png" alt="明信片正面">
+                    </div>
+                    <div class="postcard-preview-back">
+                        <img id="preview-back" src="./image1/1后.png" alt="明信片背面">
+                    </div>
+                    <div class="postcard-swipe-layer">
+                        <button class="postcard-swipe-zone" onclick="changePreview(-1)" aria-label="上一张"></button>
+                        <button class="postcard-swipe-zone" onclick="changePreview(1)" aria-label="下一张"></button>
+                    </div>
+                </div>
+            </div>
+
+            <button class="ui-image-btn shop-link-btn" onclick="openXianyu()">
+                <img src="./UI.png" alt="获取链接">
+                <span class="ui-image-btn-text">获取链接</span>
+            </button>
+        </div>
+
+        <div class="shop-view" id="shop-badge-view">
+            <div class="shop-header">
+                <div class="section-header">
+                    <div class="section-header-card">
+                        <h2 class="section-title">顿丘纪念馆</h2>
+                        <div class="section-divider"></div>
+                        <p class="section-subtitle">关于顿丘的小小纪念，<br>体验游戏后即可免费任选一张带走～</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="shop-panel postcard-grid">
+                <div class="badge-grid-inner" id="badge-grid"></div>
+            </div>
+
+            <button class="ui-image-btn shop-link-btn" onclick="openXianyu()">
+                <img src="./UI.png" alt="获取链接">
+                <span class="ui-image-btn-text">获取链接</span>
+            </button>
+        </div>
+
+        <div class="shop-view" id="shop-badge-preview-view">
+            <div class="shop-header">
+                <div class="section-header">
+                    <div class="section-header-card">
+                        <h2 class="section-title">顿丘纪念馆</h2>
+                        <div class="section-divider"></div>
+                        <p class="section-subtitle">关于顿丘的小小纪念，<br>体验游戏后即可免费任选一张带走～</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="badge-preview">
+                <div class="badge-preview-card" id="badge-preview-card">
+                    <div class="badge-preview-main">
+                        <img id="badge-preview-image" src="./image4/1.png" alt="吧唧放大图">
+                    </div>
+                    <div class="badge-swipe-layer">
+                        <button class="postcard-swipe-zone" onclick="changeBadgePreview(-1)" aria-label="上一张吧唧"></button>
+                        <button class="postcard-swipe-zone" onclick="changeBadgePreview(1)" aria-label="下一张吧唧"></button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 底部导航 -->
+    <div class="nav-bar" id="nav-bar">
+        <div class="nav-item" data-page="tour" onclick="goToPage('tour')">
+            <div class="nav-icon-wrapper">
+                <img class="nav-icon" src="./image5/1.png" alt="导览">
+            </div>
+        </div>
+        <div class="nav-item" data-page="archive" onclick="goToPage('archive')">
+            <div class="nav-icon-wrapper">
+                <img class="nav-icon" src="./image5/2.png" alt="档案">
+            </div>
+        </div>
+        <div class="nav-item" data-page="staff" onclick="goToPage('staff')">
+            <div class="nav-icon-wrapper">
+                <img class="nav-icon" src="./image5/3.png" alt="工作人员">
+            </div>
+        </div>
+        <div class="nav-item" data-page="shop" onclick="goToPage('shop')">
+            <div class="nav-icon-wrapper">
+                <img class="nav-icon" src="./image5/4.png" alt="周边">
+            </div>
+        </div>
+    </div>
+
+</main>
+<audio id="bgm-audio" src="./1.mp3" loop preload="auto"></audio>
+<audio id="button-sound" src="./2.mp3" preload="auto"></audio>
+
+<script>
+    const staffData = [
+        { title: '策划：RAINING', desc: '怎么一不小心上传了一千多个小垃圾？？？' },
+        { title: '技术：XIAOHAI', desc: '看要改吗？?我科研一波!' },
+        { title: '技术：旅行箱', desc: '啊这个github！！！' },
+        { title: '美术：鱿鱼', desc: '没问题的！嘿嘿动画一会就好！' },
+        { title: '美术：山羊', desc: '我从出生就在想做叙事类游戏的事情了！' },
+        { title: '美术：YUKI', desc: '凌晨12点-5点其实是我的早晨时间！！' },
+        { title: '策划：MILK', desc: '你先别急！！！！' }
+    ];
+
+    const STAFF_COUNT = staffData.length;
+    const DIAL_RADIUS = 150;
+    const DIAL_STEP_ANGLE = 360 / STAFF_COUNT;
+    const SWIPE_THRESHOLD = 30;
+    const BGM_MAX_VOLUME = 0.55;
+    const AUDIO_FADE_DURATION = 420;
+    const AUDIO_FADE_INTERVAL = 60;
+    const BILIBILI_URL = 'https://www.bilibili.com/video/BV1ogLf6eEjS/?share_source=copy_web&vd_source=5f948076dbc052607efff09c0d451ccd';
+    const XIANYU_URL = 'https://m.tb.cn/h.RMUuHFw?tk=nIwdgfnOcoJ';
+    let currentIndex = 0;
+    let totalRotation = 0;
+    const pages = document.querySelectorAll('.page');
+    const dialItems = document.querySelectorAll('.dial-item');
+    const dial = document.getElementById('dial');
+    const staffTitle = document.getElementById('staff-title');
+    const staffDesc = document.getElementById('staff-desc');
+    const navBar = document.getElementById('nav-bar');
+    const navItems = document.querySelectorAll('.nav-item');
+    const musicToggle = document.getElementById('music-toggle');
+    const bgmAudio = document.getElementById('bgm-audio');
+    const buttonSound = document.getElementById('button-sound');
+    const shopHomeView = document.getElementById('shop-home-view');
+    const shopPostcardView = document.getElementById('shop-postcard-view');
+    const shopPreviewView = document.getElementById('shop-preview-view');
+    const shopBadgeView = document.getElementById('shop-badge-view');
+    const shopBadgePreviewView = document.getElementById('shop-badge-preview-view');
+    const shopViews = [shopHomeView, shopPostcardView, shopPreviewView, shopBadgeView, shopBadgePreviewView].filter(Boolean);
+    const postcardGrid = document.getElementById('postcard-grid');
+    const previewFront = document.getElementById('preview-front');
+    const previewBack = document.getElementById('preview-back');
+    const postcardPreviewCard = document.getElementById('postcard-preview-card');
+    const badgeGrid = document.getElementById('badge-grid');
+    const badgePreviewCard = document.getElementById('badge-preview-card');
+    const badgePreviewImage = document.getElementById('badge-preview-image');
+    const postcardImages = Array.from({ length: 15 }, (_, index) => ({
+        front: `./image1/${index + 1}.png`,
+        back: `./image1/${index + 1}后.png`
+    }));
+    const badgeImages = Array.from({ length: 9 }, (_, index) => ({
+        thumb: `./image2/${index + 1}.png`,
+        preview: `./image4/${index + 1}.png`
+    }));
+    let currentPostcardIndex = 0;
+    let currentBadgeIndex = 0;
+    let touchStartX = 0;
+    let bgmUserPaused = false;
+    let bgmResumeAfterExternalJump = false;
+    let bgmFadeTimer = null;
+    const pageMap = Array.from(pages).reduce((map, page) => {
+        map[page.id.replace('page-', '')] = page;
+        return map;
+    }, {});
+
+    if (bgmAudio) {
+        bgmAudio.volume = BGM_MAX_VOLUME;
+    }
+
+    function setPageActive(targetPageId) {
+        pages.forEach(page => {
+            page.classList.toggle('active', page.id === targetPageId);
+        });
+    }
+
+    function setNavActive(pageId) {
+        navItems.forEach(item => {
+            item.classList.toggle('active', item.dataset.page === pageId);
+        });
+    }
+
+    function goToPage(pageId) {
+        const targetPage = pageMap[pageId];
+        if (!targetPage) return;
+
+        setPageActive(targetPage.id);
+        navBar.style.display = pageId === 'invitation' ? 'none' : 'flex';
+        setNavActive(pageId);
+
+        if (pageId !== 'shop') {
+            resetShopViews();
+        }
+    }
+
+    function playPV() {
+        bgmResumeAfterExternalJump = Boolean(bgmAudio && !bgmAudio.paused && !bgmUserPaused);
+        if (bgmResumeAfterExternalJump) {
+            fadeOutBgmAndPause();
+        }
+        window.open(BILIBILI_URL, '_blank');
+    }
+
+    function clearBgmFade() {
+        if (!bgmFadeTimer) return;
+        clearInterval(bgmFadeTimer);
+        bgmFadeTimer = null;
+    }
+
+    function updateMusicToggleState() {
+        if (!musicToggle) return;
+        musicToggle.classList.toggle('is-muted', bgmUserPaused);
+        musicToggle.setAttribute('aria-pressed', String(!bgmUserPaused));
+    }
+
+    function fadeBgmTo(targetVolume, onComplete) {
+        if (!bgmAudio) {
+            if (typeof onComplete === 'function') onComplete();
+            return;
+        }
+
+        clearBgmFade();
+
+        const startVolume = bgmAudio.volume;
+        const safeTarget = Math.max(0, Math.min(BGM_MAX_VOLUME, targetVolume));
+        const totalSteps = Math.max(1, Math.round(AUDIO_FADE_DURATION / AUDIO_FADE_INTERVAL));
+        let currentStep = 0;
+
+        bgmFadeTimer = setInterval(() => {
+            currentStep += 1;
+            const progress = currentStep / totalSteps;
+            bgmAudio.volume = startVolume + (safeTarget - startVolume) * progress;
+
+            if (currentStep < totalSteps) return;
+
+            clearBgmFade();
+            bgmAudio.volume = safeTarget;
+            if (typeof onComplete === 'function') onComplete();
+        }, AUDIO_FADE_INTERVAL);
+    }
+
+    function resumeBgmWithFade() {
+        if (!bgmAudio || bgmUserPaused) return;
+
+        clearBgmFade();
+        bgmAudio.volume = 0;
+        const playPromise = bgmAudio.play();
+        if (playPromise && typeof playPromise.catch === 'function') {
+            playPromise.catch(() => {});
+        }
+        fadeBgmTo(BGM_MAX_VOLUME);
+    }
+
+    function fadeOutBgmAndPause() {
+        if (!bgmAudio || bgmAudio.paused) return;
+        fadeBgmTo(0, () => {
+            bgmAudio.pause();
+        });
+    }
+
+    function toggleMusic() {
+        bgmUserPaused = !bgmUserPaused;
+
+        if (bgmUserPaused) {
+            bgmResumeAfterExternalJump = false;
+            fadeOutBgmAndPause();
+        } else {
+            resumeBgmWithFade();
+        }
+
+        updateMusicToggleState();
+    }
+
+    function tryStartBgmFromInteraction() {
+        if (bgmUserPaused) return;
+        if (bgmAudio && bgmAudio.paused) {
+            resumeBgmWithFade();
+        }
+    }
+
+    function resumeBgmAfterExternalJumpIfNeeded() {
+        if (!bgmResumeAfterExternalJump || bgmUserPaused) return;
+        bgmResumeAfterExternalJump = false;
+        resumeBgmWithFade();
+    }
+
+    function setActiveShopView(view) {
+        shopViews.forEach(item => item.classList.remove('active'));
+        if (view) view.classList.add('active');
+    }
+
+    function wrapIndex(current, step, total) {
+        return (current + step + total) % total;
+    }
+
+    function resetShopViews() {
+        currentPostcardIndex = 0;
+        currentBadgeIndex = 0;
+        updatePostcardPreview();
+        updateBadgePreview();
+        setActiveShopView(shopHomeView);
+    }
+
+    function showPostcardList() {
+        setActiveShopView(shopPostcardView);
+    }
+
+    function openPostcardPreview(index) {
+        currentPostcardIndex = index;
+        updatePostcardPreview();
+        setActiveShopView(shopPreviewView);
+    }
+
+    function showBadgeList() {
+        setActiveShopView(shopBadgeView);
+    }
+
+    function openBadgePreview(index) {
+        currentBadgeIndex = index;
+        updateBadgePreview();
+        setActiveShopView(shopBadgePreviewView);
+    }
+
+    function changePreview(step) {
+        currentPostcardIndex = wrapIndex(currentPostcardIndex, step, postcardImages.length);
+        updatePostcardPreview();
+    }
+
+    function changeBadgePreview(step) {
+        currentBadgeIndex = wrapIndex(currentBadgeIndex, step, badgeImages.length);
+        updateBadgePreview();
+    }
+
+    function updatePostcardPreview() {
+        const current = postcardImages[currentPostcardIndex];
+        if (!current) return;
+        if (previewFront) previewFront.src = current.front;
+        if (previewBack) previewBack.src = current.back;
+    }
+
+    function updateBadgePreview() {
+        const current = badgeImages[currentBadgeIndex];
+        if (!current || !badgePreviewImage) return;
+        badgePreviewImage.src = current.preview;
+        badgePreviewImage.alt = `吧唧放大图 ${currentBadgeIndex + 1}`;
+    }
+
+    function renderImageGrid(container, items, className, getImageSrc, getImageAlt, onClick) {
+        if (!container) return;
+        container.innerHTML = "";
+        items.forEach((item, index) => {
+            const button = document.createElement('button');
+            button.className = className;
+            button.type = 'button';
+            button.addEventListener('click', () => onClick(index));
+
+            const image = document.createElement('img');
+            image.src = getImageSrc(item);
+            image.alt = getImageAlt(index);
+
+            button.appendChild(image);
+            container.appendChild(button);
+        });
+    }
+
+    function renderPostcardGrid() {
+        renderImageGrid(
+            postcardGrid,
+            postcardImages,
+            'postcard-thumb',
+            item => item.front,
+            index => `明信片 ${index + 1}`,
+            openPostcardPreview
+        );
+    }
+
+    function renderBadgeGrid() {
+        renderImageGrid(
+            badgeGrid,
+            badgeImages,
+            'badge-thumb',
+            item => item.thumb,
+            index => `吧唧 ${index + 1}`,
+            openBadgePreview
+        );
+    }
+
+    function openXianyu() {
+        window.open(XIANYU_URL, '_blank');
+    }
+
+    function playButtonSound() {
+        if (!buttonSound) return;
+        buttonSound.currentTime = 0;
+        const playPromise = buttonSound.play();
+        if (playPromise && typeof playPromise.catch === 'function') {
+            playPromise.catch(() => {});
+        }
+    }
+
+    function bindSwipe(container, onSwipe) {
+        if (!container) return;
+
+        container.addEventListener('touchstart', function(e) {
+            touchStartX = e.changedTouches[0].clientX;
+        }, { passive: true });
+
+        container.addEventListener('touchend', function(e) {
+            const touchEndX = e.changedTouches[0].clientX;
+            const diff = touchEndX - touchStartX;
+
+            if (Math.abs(diff) < SWIPE_THRESHOLD) return;
+            onSwipe(diff > 0 ? -1 : 1);
+        }, { passive: true });
+    }
+
+    function bindGlobalInteractionAudio() {
+        if (musicToggle) {
+            musicToggle.addEventListener('click', toggleMusic);
+        }
+
+        document.addEventListener('visibilitychange', function() {
+            if (document.visibilityState === 'visible') {
+                resumeBgmAfterExternalJumpIfNeeded();
+            }
+        });
+
+        window.addEventListener('focus', resumeBgmAfterExternalJumpIfNeeded);
+
+        document.addEventListener('click', function(event) {
+            const interactive = event.target.closest('button, .nav-item, .shop-panel-clickable');
+            if (!interactive) return;
+
+            playButtonSound();
+            if (interactive !== musicToggle) {
+                tryStartBgmFromInteraction();
+            }
+        });
+    }
+
+    function bindPostcardSwipe() {
+        bindSwipe(postcardPreviewCard, changePreview);
+    }
+
+    function bindBadgeSwipe() {
+        bindSwipe(badgePreviewCard, changeBadgePreview);
+    }
+
+    const bgVideo = document.getElementById('bgVideo');
+    if (bgVideo) {
+        bgVideo.addEventListener('ended', () => {
+            bgVideo.pause();
+            bgVideo.currentTime = bgVideo.duration - 0.05;
+        });
+    }
+
+    function positionDialItems() {
+        dialItems.forEach((item, index) => {
+            const angle = (index * DIAL_STEP_ANGLE) * (Math.PI / 180);
+            const x = Math.sin(angle) * DIAL_RADIUS;
+            const y = -Math.cos(angle) * DIAL_RADIUS;
+            item.style.transform = `translate(calc(-50% + ${x}px), calc(-50% + ${y}px)) rotate(${-totalRotation}deg)`;
+        });
+    }
+
+    function initDial() {
+        updateMusicToggleState();
+        positionDialItems();
+        updateStaffText();
+        renderPostcardGrid();
+        renderBadgeGrid();
+        updatePostcardPreview();
+        updateBadgePreview();
+        resetShopViews();
+        bindPostcardSwipe();
+        bindBadgeSwipe();
+        bindGlobalInteractionAudio();
+    }
+
+    function rotateDial(direction) {
+        currentIndex = (currentIndex + direction + STAFF_COUNT) % STAFF_COUNT;
+        totalRotation += -direction * DIAL_STEP_ANGLE;
+        dial.style.transform = `rotate(${totalRotation}deg)`;
+        positionDialItems();
+        updateStaffText();
+    }
+
+    function updateStaffText() {
+        staffTitle.textContent = staffData[currentIndex].title;
+        staffDesc.textContent = staffData[currentIndex].desc;
+    }
+
+    document.addEventListener('DOMContentLoaded', initDial);
+</script>
+
+</body>
+</html>
