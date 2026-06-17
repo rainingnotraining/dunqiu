@@ -15,6 +15,16 @@
             font-display: swap;
         }
 
+        :root {
+            --page-side-padding: clamp(14px, 4vw, 20px);
+            --content-top-padding: max(64px, calc(64px + env(safe-area-inset-top)));
+            --content-bottom-padding: calc(110px + env(safe-area-inset-bottom));
+            --nav-icon-size: clamp(50px, 15vw, 60px);
+            --nav-gap: clamp(12px, 4vw, 20px);
+            --dial-size: clamp(260px, 82vw, 400px);
+            --dial-item-size: clamp(72px, 22vw, 100px);
+        }
+
         *,
         html,
         body,
@@ -31,11 +41,13 @@
         html, body {
             width: 100%;
             height: 100%;
+            min-height: 100dvh;
             overflow: hidden;
         }
 
         body {
             display: flex;
+            width: 100%;
             justify-content: center;
             align-items: center;
         }
@@ -43,6 +55,7 @@
         .phone-frame {
             width: min(100vw, 393px);
             aspect-ratio: 393 / 852;
+            max-height: 100dvh;
             position: relative;
             overflow: hidden;
             border-radius: 28px;
@@ -67,7 +80,7 @@
         }
 
         .page-padding {
-            padding-bottom: 100px;
+            padding-bottom: var(--content-bottom-padding);
         }
 
         /* 首页 */
@@ -93,7 +106,8 @@
         .invitation-content {
             position: relative;
             z-index: 10;
-            padding: 40px 30px;
+            width: 100%;
+            padding: 24px 24px calc(30px + env(safe-area-inset-bottom));
             text-align: center;
         }
 
@@ -103,7 +117,7 @@
         .staff-page,
         .shop-page {
             color: #3A7FC5;
-            padding: 30px 20px;
+            padding: var(--content-top-padding) var(--page-side-padding) 0;
             background: url("./2.jpg") center/cover no-repeat;
         }
 
@@ -158,7 +172,7 @@
 
         .section-title {
             color: #5b8fd4;
-            font-size: 27px;
+            font-size: clamp(22px, 6.8vw, 27px);
             line-height: 1.25;
             letter-spacing: 2px;
         }
@@ -173,7 +187,7 @@
 
         .section-subtitle {
             color: #5b8fd4;
-            font-size: 16px;
+            font-size: clamp(14px, 4vw, 16px);
             line-height: 1.4;
         }
 
@@ -217,14 +231,14 @@
         }
 
         .archive-name {
-            font-size: 28px;
+            font-size: clamp(24px, 7vw, 28px);
             color: #3a7fc5;
             margin-bottom: 12px;
         }
 
         .archive-info {
             line-height: 1.9;
-            font-size: 15px;
+            font-size: clamp(14px, 3.8vw, 15px);
             color: #5b82ac;
         }
 
@@ -247,7 +261,9 @@
             margin:0 auto;
             position: relative;
             z-index: 1;
-            width: 40%;
+            width: min(46vw, 180px);
+            min-width: 132px;
+            max-width: 180px;
             border: none;
             background: none;
             padding: 0;
@@ -275,7 +291,7 @@
             justify-content: center;
             color: #557696;
             font-weight: 700;
-            font-size: 22px;
+            font-size: clamp(18px, 5vw, 22px);
             text-shadow: none;
             pointer-events: none;
         }
@@ -291,12 +307,12 @@
         }
 
         .staff-section .section-title {
-            font-size: 30px;
+            font-size: clamp(24px, 7.2vw, 30px);
         }
 
         .staff-section .section-subtitle {
             padding: 0 10px;
-            font-size: 14px;
+            font-size: clamp(13px, 3.8vw, 14px);
             line-height: 1.7;
         }
 
@@ -312,13 +328,13 @@
             align-items: center;
             justify-content: space-between;
             width: 78%;
-            max-width: 312px;
+            max-width: min(100%, 312px);
             height: auto;
-            min-height: 72px;
+            min-height: clamp(60px, 16vw, 72px);
             margin-top: 18px;
-            padding: 10px 16px;
+            padding: clamp(8px, 2.5vw, 10px) clamp(12px, 4vw, 16px);
             background: rgba(255,255,255,.96);
-            border: 8px solid #bad5f6;
+            border: clamp(5px, 1.8vw, 8px) solid #bad5f6;
             border-radius: 999px;
             box-shadow: 0 8px 16px rgba(103, 170, 233, .18);
             margin-left: auto;
@@ -327,8 +343,8 @@
 
         .dial-btn {
             position: relative;
-            width: 52px;
-            height: 52px;
+            width: clamp(42px, 13vw, 52px);
+            height: clamp(42px, 13vw, 52px);
             border: none;
             background: transparent;
             cursor: pointer;
@@ -344,17 +360,17 @@
             width: 0;
             height: 0;
             transform: translate(-50%, -50%);
-            border-top: 14px solid transparent;
-            border-bottom: 14px solid transparent;
+            border-top: clamp(10px, 3.8vw, 14px) solid transparent;
+            border-bottom: clamp(10px, 3.8vw, 14px) solid transparent;
         }
 
         .dial-btn-left::before {
-            border-right: 24px solid #59b8f7;
+            border-right: clamp(18px, 6vw, 24px) solid #59b8f7;
             margin-left: -2px;
         }
 
         .dial-btn-right::before {
-            border-left: 24px solid #59b8f7;
+            border-left: clamp(18px, 6vw, 24px) solid #59b8f7;
             margin-left: 2px;
         }
 
@@ -366,8 +382,9 @@
         }
 
         .dial-wrapper {
-            width: 400px;
-            height: 400px;
+            width: min(100%, var(--dial-size));
+            aspect-ratio: 1 / 1;
+            height: auto;
             position: relative;
         }
 
@@ -382,8 +399,8 @@
         }
 
         .dial {
-            width: 400px;
-            height: 400px;
+            width: 100%;
+            height: 100%;
             border-radius: 50%;
             position: relative;
             transition: transform 0.5s ease-out;
@@ -392,14 +409,14 @@
 
         .dial-item {
             position: absolute;
-            width: 100px;
-            height: 100px;
+            width: var(--dial-item-size);
+            height: var(--dial-item-size);
             background: #fff;
             border-radius: 50%;
             display: flex;
             justify-content: center;
             align-items: center;
-            font-size: 32px;
+            font-size: clamp(24px, 7vw, 32px);
             border: 3px solid #BAD5F6;
             left: 50%;
             top: 50%;
@@ -437,7 +454,7 @@
         .shop-panel-title {
             margin-bottom: 12px;
             color: #5b8fd4;
-            font-size: 16px;
+            font-size: clamp(15px, 4vw, 16px);
         }
 
         .shop-panel-clickable {
@@ -557,7 +574,7 @@
             align-items: center;
             justify-content: space-between;
             gap: 18px;
-            min-height: 170px;
+            min-height: clamp(148px, 28vw, 170px);
             padding: 12px 10px;
             background: rgba(255,255,255,.42);
             border-radius: 28px;
@@ -576,7 +593,7 @@
             flex: 1;
             text-align: center;
             color: #5b82ac;
-            font-size: 18px;
+            font-size: clamp(15px, 4.5vw, 18px);
             line-height: 1.55;
             white-space: pre-line;
         }
@@ -631,12 +648,12 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            min-height: 470px;
+            min-height: clamp(280px, 52vh, 470px);
         }
 
         .badge-preview-main img {
             display: block;
-            width: min(100%, 290px);
+            width: min(100%, clamp(220px, 72vw, 290px));
             aspect-ratio: 1 / 1;
             object-fit: contain;
         }
@@ -666,9 +683,9 @@
             display: none;
             justify-content: center;
             align-items: center;
-            padding: 10px 0;
+            padding: clamp(8px, 2.5vw, 10px) 0 calc(clamp(8px, 2.5vw, 10px) + env(safe-area-inset-bottom));
             border-radius: 150px 150px 0 0;
-            gap: 20px;
+            gap: var(--nav-gap);
         }
 
         .nav-item {
@@ -676,7 +693,7 @@
             flex-direction: column;
             align-items: center;
             color: #3A7FC5;
-            font-size: 12px;
+            font-size: clamp(11px, 3.2vw, 12px);
             cursor: pointer;
             transition: transform 0.18s ease, filter 0.18s ease, opacity 0.18s ease;
         }
@@ -693,8 +710,8 @@
         }
 
         .nav-icon-wrapper {
-            width: 60px;
-            height: 60px;
+            width: var(--nav-icon-size);
+            height: var(--nav-icon-size);
             border-radius: 50%;
             background: #44C0FE;
             display: flex;
@@ -712,11 +729,11 @@
 
         .music-toggle {
             position: absolute;
-            top: 16px;
-            right: 16px;
+            top: calc(12px + env(safe-area-inset-top));
+            right: clamp(12px, 4vw, 16px);
             z-index: 140;
-            width: 42px;
-            height: 42px;
+            width: clamp(40px, 12vw, 42px);
+            height: clamp(40px, 12vw, 42px);
             border: none;
             border-radius: 50%;
             background: rgba(255,255,255,.88);
@@ -749,6 +766,36 @@
             border-radius: 999px;
             background: #f08aa1;
             transform: rotate(-45deg);
+        }
+
+        @media (max-width: 480px) {
+            body {
+                align-items: stretch;
+            }
+
+            .phone-frame {
+                width: 100vw;
+                height: 100dvh;
+                max-width: none;
+                max-height: none;
+                aspect-ratio: auto;
+                border-radius: 0;
+            }
+
+            .section-header-card {
+                padding: 22px 16px 16px;
+            }
+
+            .shop-set-card {
+                flex-direction: column;
+                justify-content: center;
+                text-align: center;
+            }
+
+            .shop-set-image {
+                flex: none;
+                width: min(100%, 220px);
+            }
         }
     </style>
 </head>
@@ -1164,6 +1211,11 @@ or
         bgmFadeTimer = null;
     }
 
+    function getDialRadius() {
+        if (!dial) return DIAL_RADIUS;
+        return Math.min(DIAL_RADIUS, Math.max(98, dial.clientWidth * 0.375));
+    }
+
     function updateMusicToggleState() {
         if (!musicToggle) return;
         musicToggle.classList.toggle('is-muted', bgmUserPaused);
@@ -1412,10 +1464,11 @@ or
     }
 
     function positionDialItems() {
+        const dialRadius = getDialRadius();
         dialItems.forEach((item, index) => {
             const angle = (index * DIAL_STEP_ANGLE) * (Math.PI / 180);
-            const x = Math.sin(angle) * DIAL_RADIUS;
-            const y = -Math.cos(angle) * DIAL_RADIUS;
+            const x = Math.sin(angle) * dialRadius;
+            const y = -Math.cos(angle) * dialRadius;
             item.style.transform = `translate(calc(-50% + ${x}px), calc(-50% + ${y}px)) rotate(${-totalRotation}deg)`;
         });
     }
@@ -1432,6 +1485,7 @@ or
         bindPostcardSwipe();
         bindBadgeSwipe();
         bindGlobalInteractionAudio();
+        window.addEventListener('resize', positionDialItems);
     }
 
     function rotateDial(direction) {
